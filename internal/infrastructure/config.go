@@ -16,6 +16,9 @@ type Config struct {
 		DBName   string
 		SSLMode  string
 	}
+	Auth struct {
+		PasswordSalt string
+	}
 }
 
 func LoadConfig() (*Config, error) {

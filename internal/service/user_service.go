@@ -1,6 +1,7 @@
 package service
 
 import (
+	"marketplace-bhs-test/internal/entity"
 	"marketplace-bhs-test/internal/infrastructure/hash"
 	"marketplace-bhs-test/internal/repository"
 )
@@ -11,7 +12,7 @@ type SignInInput struct {
 }
 
 type UserService interface {
-	SignUp(input SignInInput) error
+	SignUp(SignInInput) error
 }
 
 type userService struct {
@@ -28,6 +29,17 @@ func NewUserService(hasher *hash.SHA1Hasher) *userService {
 func (s *userService) SignUp(input SignInInput) error {
 	passwordHash, err := s.hasher.Hash(input.Password)
 	if err != nil {
+		return err
+	}
+
+	user := &entity.User{
+		Id:            0,
+		Username:      input.Name,
+		Password_hash: passwordHash,
+		Assets:        []entity.Asset{},
+	}
+
+	if err := s.repo.Create(user); err != nil {
 		return err
 	}
 
