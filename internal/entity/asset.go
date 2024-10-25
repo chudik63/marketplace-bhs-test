@@ -4,8 +4,8 @@ import "gorm.io/gorm"
 
 type Asset struct {
 	gorm.Model
-	Id          int     `gorm:"uniqueIndex;not null"`
-	Name        string  `gorm:"not null"`
+	Name        string  `gorm:"uniqueIndex;not null"`
 	Description string  `gorm:"not null"`
 	Price       float64 `gorm:"not null"`
+	UserID      uint    `gorm:"not null"`
 }

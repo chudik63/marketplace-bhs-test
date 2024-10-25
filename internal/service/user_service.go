@@ -12,7 +12,7 @@ type SignInInput struct {
 }
 
 type UserService interface {
-	SignUp(SignInInput) error
+	SignUp(input *SignInInput) error
 }
 
 type userService struct {
@@ -20,23 +20,23 @@ type userService struct {
 	repo   repository.UserRepository
 }
 
-func NewUserService(hasher *hash.SHA1Hasher) *userService {
+func NewUserService(hasher hash.PasswordHasher, repository repository.UserRepository) *userService {
 	return &userService{
 		hasher: hasher,
+		repo:   repository,
 	}
 }
 
-func (s *userService) SignUp(input SignInInput) error {
+func (s *userService) SignUp(input *SignInInput) error {
 	passwordHash, err := s.hasher.Hash(input.Password)
 	if err != nil {
 		return err
 	}
 
 	user := &entity.User{
-		Id:            0,
 		Username:      input.Name,
 		Password_hash: passwordHash,
-		Assets:        []entity.Asset{},
+		Assets:        make([]entity.Asset, 0),
 	}
 
 	if err := s.repo.Create(user); err != nil {
