@@ -7,15 +7,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type UserService interface {
-	SignUp(input service.SignInInput)
-}
-
 type UserHandler struct {
-	userService UserService
+	userService service.UserService
 }
 
-func NewUserHandler(router *gin.Engine, service *service.UserService) {
+func NewUserHandler(router *gin.Engine, service service.UserService) {
 	handler := &UserHandler{
 		userService: service,
 	}
@@ -34,9 +30,17 @@ func (h *UserHandler) SingUp(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "Failed to read user info",
 		})
+
+		return
 	}
 
-	h.userService.SignUp(inp)
+	if err := h.userService.SignUp(inp); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Failed to sign up",
+		})
+
+		return
+	}
 
 	c.Status(http.StatusCreated)
 }
