@@ -122,6 +122,7 @@ func (h *UserHandler) SignOut(c *gin.Context) {
 // @Description Update the user's balance by a specified count
 // @Tags users
 // @Param count path float64 true "Balance change amount"
+// @Param id path uint64 true "User id"
 // @Success 200
 // @Failure 400 {object} map[string]string
 // @Router /users/{id}/balance/{count} [patch]

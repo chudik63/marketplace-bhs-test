@@ -37,9 +37,6 @@ definitions:
       updatedAt:
         type: string
       user_id:
-        description: |-
-          ID of the user who owns the asset
-          Required: true
         example: 1
         type: integer
     type: object
@@ -216,6 +213,11 @@ paths:
         name: count
         required: true
         type: number
+      - description: User id
+        in: path
+        name: id
+        required: true
+        type: integer
       responses:
         "200":
           description: OK

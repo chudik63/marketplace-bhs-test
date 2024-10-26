@@ -120,6 +120,10 @@ curl -X PATCH http://localhost:8080/marketplace/assets/1 \
   "message": ""
 }
 ```
+More details on
+```
+http://localhost:8080/swagger/index.html
+```
 
 # Technologies Used
 - Golang (Gin, Viper, Gorm)

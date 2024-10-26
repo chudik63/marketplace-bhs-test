@@ -258,6 +258,13 @@ const docTemplate = `{
                         "name": "count",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "User id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -322,7 +329,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "user_id": {
-                    "description": "ID of the user who owns the asset\nRequired: true",
                     "type": "integer",
                     "example": 1
                 }
