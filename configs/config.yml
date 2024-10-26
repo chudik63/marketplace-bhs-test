@@ -11,5 +11,5 @@ database:
 
 auth:
   secretKey: abcdefgh
-  accessTokenTTL: 24h
-  refreshTokenTTL: 30d
+  accessTokenTTL: 15m
+  refreshTokenTTL: 43200m

@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"errors"
 	"marketplace-bhs-test/internal/auth"
 	"marketplace-bhs-test/internal/entity"
 	"marketplace-bhs-test/internal/repository"
@@ -24,9 +23,12 @@ type userService struct {
 	refreshTokenTTL time.Duration
 }
 
-func NewUserService(repository repository.UserRepository) *userService {
+func NewUserService(repository repository.UserRepository, tokenManager auth.TokenManager, accessTokenTTL, refreshTokenTTL time.Duration) *userService {
 	return &userService{
-		repo: repository,
+		repo:            repository,
+		tokenManager:    tokenManager,
+		accessTokenTTL:  accessTokenTTL,
+		refreshTokenTTL: refreshTokenTTL,
 	}
 }
 
@@ -49,11 +51,28 @@ func (s *userService) SignUp(ctx context.Context, input *SignUpInput) error {
 }
 
 func (s *userService) SignIn(ctx context.Context, input *SignUpInput) (Tokens, error) {
-	user, err := s.repo.GetByCredentials(ctx, input.Name)
+	user, err := s.repo.GetByName(ctx, input.Name)
+	if err != nil {
+		return Tokens{}, err
+	}
 	passwordOK := bcrypt.CompareHashAndPassword([]byte(user.Password_hash), []byte(input.Password))
-	if err != nil || passwordOK != nil {
-		return Tokens{}, errors.New("wrong name or password")
+	if passwordOK != nil {
+		return Tokens{}, err
 	}
 
-	return Tokens{}, nil
+	var tokens Tokens
+
+	tokens.AccessToken, err = s.tokenManager.NewJWT(user.ID, s.accessTokenTTL)
+	if err != nil {
+		return tokens, err
+	}
+	tokens.AccessTokenTTL = s.accessTokenTTL
+
+	tokens.RefreshToken, err = s.tokenManager.NewRefreshToken()
+	if err != nil {
+		return tokens, err
+	}
+	tokens.RefreshTokenTTL = s.refreshTokenTTL
+
+	return tokens, nil
 }

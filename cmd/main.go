@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"marketplace-bhs-test/internal/auth"
 	"marketplace-bhs-test/internal/delivery/http"
 	"marketplace-bhs-test/internal/infrastructure"
 	"marketplace-bhs-test/internal/infrastructure/database"
@@ -22,8 +23,13 @@ func main() {
 		log.Fatalf("Failed to connect to DB: %v", err)
 	}
 
+	tokenManager, err := auth.NewManager(cfg.Auth.SecretKey)
+	if err != nil {
+		log.Fatalf("Failed to create token manager: %v", err)
+	}
+
 	userRepo := repository.NewUserRepository(db)
-	userService := service.NewUserService(userRepo)
+	userService := service.NewUserService(userRepo, tokenManager, cfg.Auth.AccessTokenTTL, cfg.Auth.RefreshTokenTTL)
 
 	router := gin.Default()
 	http.NewUserHandler(router, userService)
