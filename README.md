@@ -10,6 +10,9 @@ Build and start all containers:
 ```
 make build
 ```
+---
+\
+\
 Start all containers:
 ```
 make up
@@ -39,6 +42,12 @@ curl -X POST http://localhost:8080/sign-up \
            "password": "password"
          }'
 ```
+```
+{
+  "status": StatusCode,
+  "message": ""
+}
+```
 - User Authentication: POST /sign-in
 ```
 curl -X POST http://localhost:8080/sign-in \
@@ -48,10 +57,23 @@ curl -X POST http://localhost:8080/sign-in \
            "password": "password"
          }'
 ```
+```
+{
+  "status": StatusCode,
+  "AccessToken": "YOUR_ACCESS_TOKEN",
+  "RefreshToken": "YOUR_REFRESH_TOKEN"
+}
+```
 - User Signing Out: POST /sign-out
 ```
 curl -X POST http://localhost:8080/sign-out \
      --cookie "access_token=YOUR_ACCESS_TOKEN; refresh_token=YOUR_REFRESH_TOKEN"
+```
+```
+{
+  "status": StatusCode,
+  "message": ""
+}
 ```
 - Create Asset: POST /marketplace/assets
 ```
@@ -63,17 +85,40 @@ curl -X POST http://localhost:8080/marketplace/assets \
            "description": "This is an example asset",
            "price": 100.0
          }'
-
+```
+```
+{
+  "status": StatusCode,
+  "data": {
+    "id": 1,
+    "name": "Example Asset",
+    "description": "This is an example asset",
+    "price": 100.0,
+    "userId": 123
+  }
+}
 ```
 - Delete Asset: DELETE /marketplace/assets/:id
 ```
 curl -X DELETE http://localhost:8080/marketplace/assets/1 \
      --cookie "access_token=YOUR_ACCESS_TOKEN; refresh_token=YOUR_REFRESH_TOKEN"
 ```
+```
+{
+  "status": StatusCode,
+  "message": ""
+}
+```
 - Buy Asset: PATCH /marketplace/assets/:id
 ```
 curl -X PATCH http://localhost:8080/marketplace/assets/1 \
      --cookie "access_token=YOUR_ACCESS_TOKEN; refresh_token=YOUR_REFRESH_TOKEN"
+```
+```
+{
+  "status": StatusCode,
+  "message": ""
+}
 ```
 
 # Technologies Used
