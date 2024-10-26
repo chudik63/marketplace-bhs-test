@@ -13,6 +13,7 @@ import (
 type UserService interface {
 	SignUp(ctx context.Context, input *SignUpInput) error
 	SignIn(ctx context.Context, input *SignUpInput) (Tokens, error)
+	UpdateBalance(ctx context.Context, userId uint, count float64) error
 }
 
 type userService struct {
@@ -75,4 +76,13 @@ func (s *userService) SignIn(ctx context.Context, input *SignUpInput) (Tokens, e
 	tokens.RefreshTokenTTL = s.refreshTokenTTL
 
 	return tokens, nil
+}
+
+func (s *userService) UpdateBalance(ctx context.Context, userID uint, count float64) error {
+	user, err := s.repo.GetByID(ctx, userID)
+	if err != nil {
+		return err
+	}
+
+	return s.repo.UpdateBalance(ctx, userID, user.Balance+count)
 }
