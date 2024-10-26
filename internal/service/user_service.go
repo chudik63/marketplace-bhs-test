@@ -57,7 +57,7 @@ func (s *userService) SignIn(ctx context.Context, input *SignUpInput) (Tokens, e
 	}
 	passwordOK := bcrypt.CompareHashAndPassword([]byte(user.Password_hash), []byte(input.Password))
 	if passwordOK != nil {
-		return Tokens{}, err
+		return Tokens{}, passwordOK
 	}
 
 	var tokens Tokens

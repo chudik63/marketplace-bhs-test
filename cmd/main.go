@@ -4,6 +4,7 @@ import (
 	"log"
 	"marketplace-bhs-test/internal/auth"
 	"marketplace-bhs-test/internal/delivery/http"
+	"marketplace-bhs-test/internal/delivery/http/middleware"
 	"marketplace-bhs-test/internal/infrastructure"
 	"marketplace-bhs-test/internal/infrastructure/database"
 	"marketplace-bhs-test/internal/repository"
@@ -32,6 +33,8 @@ func main() {
 	userService := service.NewUserService(userRepo, tokenManager, cfg.Auth.AccessTokenTTL, cfg.Auth.RefreshTokenTTL)
 
 	router := gin.Default()
+	router.Use(middleware.AuthMiddleware(tokenManager))
+
 	http.NewUserHandler(router, userService)
 
 	if err := router.Run(cfg.Server.Port); err != nil {

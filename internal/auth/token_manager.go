@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"math/rand"
+	"strconv"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -11,7 +12,7 @@ import (
 
 type TokenManager interface {
 	NewJWT(userId uint, ttl time.Duration) (string, error)
-	Parse(accessToken string) (string, error)
+	Parse(accessToken string) (uint, int64, error)
 	NewRefreshToken() (string, error)
 }
 
@@ -36,7 +37,7 @@ func (m *Manager) NewJWT(userId uint, ttl time.Duration) (string, error) {
 	return token.SignedString([]byte(m.secretKey))
 }
 
-func (m *Manager) Parse(accessToken string) (string, error) {
+func (m *Manager) Parse(accessToken string) (uint, int64, error) {
 	token, err := jwt.Parse(accessToken, func(token *jwt.Token) (i interface{}, err error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
@@ -45,15 +46,20 @@ func (m *Manager) Parse(accessToken string) (string, error) {
 		return []byte(m.secretKey), nil
 	})
 	if err != nil {
-		return "", err
+		return 0, 0, err
 	}
 
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok {
-		return "", fmt.Errorf("error get user claims from token")
+		return 0, 0, fmt.Errorf("error get user claims from token: %v", ok)
 	}
 
-	return claims["sub"].(string), nil
+	userId, err := strconv.Atoi(claims["sub"].(string))
+	if err != nil {
+		return 0, 0, fmt.Errorf("error parsing user id: %v", err)
+	}
+
+	return uint(userId), claims["exp"].(int64), nil
 }
 
 func (m *Manager) NewRefreshToken() (string, error) {

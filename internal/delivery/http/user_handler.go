@@ -20,6 +20,7 @@ func NewUserHandler(router *gin.Engine, service service.UserService) {
 	{
 		userRoutes.POST("/sign-up", handler.SingUp)
 		userRoutes.POST("/sign-in", handler.SignIn)
+		userRoutes.POST("/sign-out", handler.SignOut)
 	}
 }
 
@@ -72,4 +73,11 @@ func (h *UserHandler) SignIn(c *gin.Context) {
 		"AccessToken":  res.AccessToken,
 		"RefreshToken": res.RefreshToken,
 	})
+}
+
+func (h *UserHandler) SignOut(c *gin.Context) {
+	c.SetCookie("access_token", "", -1, "/", "localhost", false, true)
+	c.SetCookie("refresh_token", "", -1, "/", "localhost", false, true)
+
+	c.Status(http.StatusOK)
 }
