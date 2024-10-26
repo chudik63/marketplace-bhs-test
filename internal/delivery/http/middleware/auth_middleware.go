@@ -29,13 +29,13 @@ func AuthMiddleware(tokenManager *auth.Manager) gin.HandlerFunc {
 			return
 		}
 
-		if time.Now().Unix() > exp {
+		if float64(time.Now().Unix()) > exp {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid access token"})
 			c.Abort()
 			return
 		}
 
-		c.Set("userId", userId)
+		c.Set("userID", userId)
 		c.Next()
 	}
 }

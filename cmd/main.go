@@ -30,7 +30,7 @@ func main() {
 	}
 
 	userRepo := repository.NewUserRepository(db)
-	assetRepo := repository.NewAssetRepository(db)
+	assetRepo := repository.NewAssetRepository(db, userRepo)
 
 	userService := service.NewUserService(userRepo, tokenManager, cfg.Auth.AccessTokenTTL, cfg.Auth.RefreshTokenTTL)
 	assetService := service.NewAssetService(assetRepo)
