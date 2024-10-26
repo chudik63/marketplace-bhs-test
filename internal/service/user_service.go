@@ -36,7 +36,6 @@ func (s *userService) SignUp(input *SignInInput) error {
 	user := &entity.User{
 		Username:      input.Name,
 		Password_hash: passwordHash,
-		Assets:        make([]entity.Asset, 0),
 	}
 
 	if err := s.repo.Create(user); err != nil {

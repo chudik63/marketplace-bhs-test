@@ -23,9 +23,9 @@ func main() {
 		log.Fatalf("Failed to connect to DB: %v", err)
 	}
 
-	repository := repository.NewUserRepository(db)
+	userRepo := repository.NewUserRepository(db)
 	hasher := hash.NewSHA1Hasher(cfg.Auth.PasswordSalt)
-	userService := service.NewUserService(hasher, repository)
+	userService := service.NewUserService(hasher, userRepo)
 
 	router := gin.Default()
 	http.NewUserHandler(router, userService)
