@@ -10,13 +10,13 @@ import (
 )
 
 type TokenManager interface {
-	NewJWT(userId string, ttl time.Duration) (string, error)
+	NewJWT(userId uint, ttl time.Duration) (string, error)
 	Parse(accessToken string) (string, error)
 	NewRefreshToken() (string, error)
 }
 
 type Manager struct {
-	signingKey string
+	secretKey string
 }
 
 func NewManager(signingKey string) (*Manager, error) {
@@ -24,16 +24,16 @@ func NewManager(signingKey string) (*Manager, error) {
 		return nil, errors.New("empty signing key")
 	}
 
-	return &Manager{signingKey: signingKey}, nil
+	return &Manager{secretKey: signingKey}, nil
 }
 
-func (m *Manager) NewJWT(userId string, ttl time.Duration) (string, error) {
+func (m *Manager) NewJWT(userId uint, ttl time.Duration) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"sub": userId,
 		"exp": time.Now().Add(ttl).Unix(),
 	})
 
-	return token.SignedString([]byte(m.signingKey))
+	return token.SignedString([]byte(m.secretKey))
 }
 
 func (m *Manager) Parse(accessToken string) (string, error) {
@@ -42,7 +42,7 @@ func (m *Manager) Parse(accessToken string) (string, error) {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
 
-		return []byte(m.signingKey), nil
+		return []byte(m.secretKey), nil
 	})
 	if err != nil {
 		return "", err

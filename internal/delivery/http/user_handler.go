@@ -64,5 +64,9 @@ func (h *UserHandler) SignIn(c *gin.Context) {
 
 		return
 	}
-	_ = res
+
+	c.SetCookie("access_token", res.AccessToken, 24*3600, "/", "localhost", false, true)
+	c.SetCookie("refresh_token", res.RefreshToken, 24*3600*30, "/", "localhost", false, true)
+
+	c.Status(http.StatusAccepted)
 }
