@@ -1,0 +1,13 @@
+server:
+  port: ":8080"
+
+database:
+  host: "localhost"
+  port: 5432
+  user: "root"
+  password: 123
+  dbname: "marketplace"
+  sslmode: "disable"
+
+auth:
+  passwordsalt: abcdef

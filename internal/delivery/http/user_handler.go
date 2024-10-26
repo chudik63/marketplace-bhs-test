@@ -24,7 +24,7 @@ func NewUserHandler(router *gin.Engine, service service.UserService) {
 }
 
 func (h *UserHandler) SingUp(c *gin.Context) {
-	var inp service.SignInInput
+	var inp service.SignUpInput
 
 	if err := c.ShouldBindJSON(&inp); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -34,7 +34,7 @@ func (h *UserHandler) SingUp(c *gin.Context) {
 		return
 	}
 
-	if err := h.userService.SignUp(&inp); err != nil {
+	if err := h.userService.SignUp(c, &inp); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Failed to sign up",
 		})
@@ -46,5 +46,23 @@ func (h *UserHandler) SingUp(c *gin.Context) {
 }
 
 func (h *UserHandler) SignIn(c *gin.Context) {
+	var inp service.SignUpInput
 
+	if err := c.ShouldBindJSON(&inp); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Failed to read user info",
+		})
+
+		return
+	}
+
+	res, err := h.userService.SignIn(c, &inp)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Failed to sign in",
+		})
+
+		return
+	}
+	_ = res
 }

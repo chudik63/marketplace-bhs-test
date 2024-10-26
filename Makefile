@@ -4,6 +4,12 @@ up:
 down:
 	docker-compose down
 
+dev-up:
+	docker-compose up -d postgres
+
+dev-down:
+	docker-compose down postgres
+
 run:
 	go run cmd/main.go
 

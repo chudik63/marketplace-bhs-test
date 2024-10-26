@@ -5,7 +5,6 @@ import (
 	"marketplace-bhs-test/internal/delivery/http"
 	"marketplace-bhs-test/internal/infrastructure"
 	"marketplace-bhs-test/internal/infrastructure/database"
-	"marketplace-bhs-test/internal/infrastructure/hash"
 	"marketplace-bhs-test/internal/repository"
 	"marketplace-bhs-test/internal/service"
 
@@ -24,8 +23,7 @@ func main() {
 	}
 
 	userRepo := repository.NewUserRepository(db)
-	hasher := hash.NewSHA1Hasher(cfg.Auth.PasswordSalt)
-	userService := service.NewUserService(hasher, userRepo)
+	userService := service.NewUserService(userRepo)
 
 	router := gin.Default()
 	http.NewUserHandler(router, userService)
