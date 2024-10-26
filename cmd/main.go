@@ -30,12 +30,16 @@ func main() {
 	}
 
 	userRepo := repository.NewUserRepository(db)
+	assetRepo := repository.NewAssetRepository(db)
+
 	userService := service.NewUserService(userRepo, tokenManager, cfg.Auth.AccessTokenTTL, cfg.Auth.RefreshTokenTTL)
+	assetService := service.NewAssetService(assetRepo)
 
 	router := gin.Default()
 	router.Use(middleware.AuthMiddleware(tokenManager))
 
 	http.NewUserHandler(router, userService)
+	http.NewAssetHandler(router, assetService)
 
 	if err := router.Run(cfg.Server.Port); err != nil {
 		log.Fatalf("Failed to run server: %v", err)
