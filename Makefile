@@ -12,3 +12,6 @@ dev-up:
 
 dev-down:
 	docker-compose down postgres
+
+swagger:
+	swag init -g cmd/main.go -o docs --parseDependency --parseInternal

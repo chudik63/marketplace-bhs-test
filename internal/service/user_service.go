@@ -12,8 +12,8 @@ import (
 
 type UserService interface {
 	SignUp(ctx context.Context, input *SignUpInput) error
-	SignIn(ctx context.Context, input *SignUpInput) (Tokens, error)
-	UpdateBalance(ctx context.Context, userId uint, count float64) error
+	SignIn(ctx context.Context, input *SignInInput) (Tokens, error)
+	UpdateBalance(ctx context.Context, userId uint64, count float64) error
 }
 
 type userService struct {
@@ -51,7 +51,7 @@ func (s *userService) SignUp(ctx context.Context, input *SignUpInput) error {
 	return nil
 }
 
-func (s *userService) SignIn(ctx context.Context, input *SignUpInput) (Tokens, error) {
+func (s *userService) SignIn(ctx context.Context, input *SignInInput) (Tokens, error) {
 	user, err := s.repo.GetByName(ctx, input.Name)
 	if err != nil {
 		return Tokens{}, err
@@ -78,7 +78,7 @@ func (s *userService) SignIn(ctx context.Context, input *SignUpInput) (Tokens, e
 	return tokens, nil
 }
 
-func (s *userService) UpdateBalance(ctx context.Context, userID uint, count float64) error {
+func (s *userService) UpdateBalance(ctx context.Context, userID uint64, count float64) error {
 	user, err := s.repo.GetByID(ctx, userID)
 	if err != nil {
 		return err

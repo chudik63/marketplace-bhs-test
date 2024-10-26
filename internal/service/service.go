@@ -7,6 +7,11 @@ type SignUpInput struct {
 	Password string `json:"password"`
 }
 
+type SignInInput struct {
+	Name     string `json:"name"`
+	Password string `json:"password"`
+}
+
 type Tokens struct {
 	AccessToken     string
 	AccessTokenTTL  time.Duration

@@ -31,10 +31,10 @@ func Run(cfg *infrastructure.Config) {
 	assetService := service.NewAssetService(assetRepo)
 
 	router := gin.Default()
-	router.Use(middleware.AuthMiddleware(tokenManager))
+	middleware := middleware.AuthMiddleware(tokenManager)
 
-	http.NewUserHandler(router, userService)
-	http.NewAssetHandler(router, assetService)
+	http.NewUserHandler(router, userService, middleware)
+	http.NewAssetHandler(router, assetService, middleware)
 
 	if err := router.Run(cfg.Server.Port); err != nil {
 		log.Fatalf("Failed to run server: %v", err)

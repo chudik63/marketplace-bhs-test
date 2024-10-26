@@ -10,8 +10,8 @@ import (
 type UserRepository interface {
 	Create(ctx context.Context, user *entity.User) error
 	GetByName(ctx context.Context, name string) (*entity.User, error)
-	GetByID(ctx context.Context, userID uint) (*entity.User, error)
-	UpdateBalance(ctx context.Context, userID uint, newBalance float64) error
+	GetByID(ctx context.Context, userID uint64) (*entity.User, error)
+	UpdateBalance(ctx context.Context, userID uint64, newBalance float64) error
 }
 
 type userRepository struct {
@@ -34,7 +34,7 @@ func (r *userRepository) GetByName(ctx context.Context, name string) (*entity.Us
 	return &user, nil
 }
 
-func (r *userRepository) GetByID(ctx context.Context, userID uint) (*entity.User, error) {
+func (r *userRepository) GetByID(ctx context.Context, userID uint64) (*entity.User, error) {
 	var user entity.User
 
 	if err := r.db.WithContext(ctx).First(&user, userID).Error; err != nil {
@@ -43,7 +43,7 @@ func (r *userRepository) GetByID(ctx context.Context, userID uint) (*entity.User
 	return &user, nil
 }
 
-func (r *userRepository) UpdateBalance(ctx context.Context, userID uint, newBalance float64) error {
+func (r *userRepository) UpdateBalance(ctx context.Context, userID uint64, newBalance float64) error {
 	if err := r.db.WithContext(ctx).Model(&entity.User{}).Where("id = ?", userID).Update("balance", newBalance).Error; err != nil {
 		return err
 	}

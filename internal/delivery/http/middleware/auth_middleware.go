@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"log"
 	"marketplace-bhs-test/internal/auth"
 	"net/http"
 	"time"
@@ -10,11 +11,6 @@ import (
 
 func AuthMiddleware(tokenManager *auth.Manager) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		if c.Request.URL.Path == "/users/sign-in" || c.Request.URL.Path == "/users/sign-up" || c.Request.URL.Path == "/users/sign-out" {
-			c.Next()
-			return
-		}
-
 		accessToken, err := c.Cookie("access_token")
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Empty authorization token"})
@@ -28,14 +24,14 @@ func AuthMiddleware(tokenManager *auth.Manager) gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-
+		log.Print(userId)
 		if float64(time.Now().Unix()) > exp {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid access token"})
 			c.Abort()
 			return
 		}
 
-		c.Set("userID", userId)
+		c.Set("userID", uint64(userId))
 		c.Next()
 	}
 }

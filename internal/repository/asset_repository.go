@@ -10,8 +10,8 @@ import (
 
 type AssetRepository interface {
 	Create(ctx context.Context, asset *entity.Asset) error
-	Delete(ctx context.Context, id uint) error
-	BuyAsset(ctx context.Context, userID, assetID uint) error
+	Delete(ctx context.Context, id uint64) error
+	BuyAsset(ctx context.Context, userID, assetID uint64) error
 }
 
 type assetRepository struct {
@@ -30,11 +30,11 @@ func (r *assetRepository) Create(ctx context.Context, asset *entity.Asset) error
 	return r.db.WithContext(ctx).Create(asset).Error
 }
 
-func (r *assetRepository) Delete(ctx context.Context, id uint) error {
+func (r *assetRepository) Delete(ctx context.Context, id uint64) error {
 	return r.db.WithContext(ctx).Unscoped().Delete(&entity.Asset{}, id).Error
 }
 
-func (r *assetRepository) BuyAsset(ctx context.Context, userID, assetID uint) error {
+func (r *assetRepository) BuyAsset(ctx context.Context, userID, assetID uint64) error {
 	return r.db.WithContext(ctx).Transaction(func(db *gorm.DB) error {
 		var asset entity.Asset
 

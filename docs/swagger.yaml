@@ -1,0 +1,231 @@
+definitions:
+  gorm.DeletedAt:
+    properties:
+      time:
+        type: string
+      valid:
+        description: Valid is true if Time is not NULL
+        type: boolean
+    type: object
+  marketplace-bhs-test_internal_entity.Asset:
+    description: Information about an asset in the marketplace
+    properties:
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      description:
+        description: |-
+          Detailed description of the asset
+          Required: true
+        example: Digital artwork
+        type: string
+      id:
+        type: integer
+      name:
+        description: |-
+          Unique name for the asset
+          Required: true
+        example: Artwork
+        type: string
+      price:
+        description: |-
+          Price of the asset in the marketplace
+          Required: true
+        example: 100.5
+        type: number
+      updatedAt:
+        type: string
+      user_id:
+        description: |-
+          ID of the user who owns the asset
+          Required: true
+        example: 1
+        type: integer
+    type: object
+  marketplace-bhs-test_internal_service.SignUpInput:
+    properties:
+      name:
+        type: string
+      password:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: test tast for Marketplace-Hive project
+  title: Marketplace-BHS-test
+  version: "1.0"
+paths:
+  /marketplace/assets:
+    post:
+      consumes:
+      - application/json
+      description: Create a new asset
+      parameters:
+      - description: Asset data
+        in: body
+        name: asset
+        required: true
+        schema:
+          $ref: '#/definitions/marketplace-bhs-test_internal_entity.Asset'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/marketplace-bhs-test_internal_entity.Asset'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create an asset
+      tags:
+      - assets
+  /marketplace/assets/{id}:
+    delete:
+      description: Delete an asset by ID
+      parameters:
+      - description: Asset ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete an asset
+      tags:
+      - assets
+    patch:
+      description: Purchase an asset by ID
+      parameters:
+      - description: Asset ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Buy an asset
+      tags:
+      - assets
+  /sign-in:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate a user and return access and refresh tokens
+      parameters:
+      - description: User credentials
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/marketplace-bhs-test_internal_service.SignUpInput'
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Sign in a user
+      tags:
+      - users
+  /sign-out:
+    post:
+      description: Clear the user's access and refresh tokens
+      responses:
+        "200":
+          description: OK
+      summary: Sign out a user
+      tags:
+      - users
+  /sign-up:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user with the provided credentials
+      parameters:
+      - description: User credentials
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/marketplace-bhs-test_internal_service.SignUpInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Sign up a new user
+      tags:
+      - users
+  /users/{id}/balance/{count}:
+    patch:
+      description: Update the user's balance by a specified count
+      parameters:
+      - description: Balance change amount
+        in: path
+        name: count
+        required: true
+        type: number
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update user's balance
+      tags:
+      - users
+swagger: "2.0"

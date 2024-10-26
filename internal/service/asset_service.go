@@ -8,8 +8,8 @@ import (
 
 type AssetService interface {
 	CreateAsset(ctx context.Context, asset *entity.Asset) error
-	DeleteAsset(ctx context.Context, id uint) error
-	BuyAsset(ctx context.Context, id uint, userID uint) error
+	DeleteAsset(ctx context.Context, id uint64) error
+	BuyAsset(ctx context.Context, id, userID uint64) error
 }
 
 type assetService struct {
@@ -24,10 +24,10 @@ func (s *assetService) CreateAsset(ctx context.Context, asset *entity.Asset) err
 	return s.repo.Create(ctx, asset)
 }
 
-func (s *assetService) DeleteAsset(ctx context.Context, id uint) error {
+func (s *assetService) DeleteAsset(ctx context.Context, id uint64) error {
 	return s.repo.Delete(ctx, id)
 }
 
-func (s *assetService) BuyAsset(ctx context.Context, id uint, userID uint) error {
+func (s *assetService) BuyAsset(ctx context.Context, id uint64, userID uint64) error {
 	return s.repo.BuyAsset(ctx, userID, id)
 }
