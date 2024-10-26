@@ -10,4 +10,6 @@ database:
   sslmode: "disable"
 
 auth:
-  passwordsalt: abcdef
+  secretKey: abcdefgh
+  accessTokenTTL: 24h
+  refreshTokenTTL: 30d

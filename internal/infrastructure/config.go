@@ -1,6 +1,8 @@
 package infrastructure
 
 import (
+	"time"
+
 	"github.com/spf13/viper"
 )
 
@@ -17,7 +19,9 @@ type Config struct {
 		SSLMode  string
 	}
 	Auth struct {
-		PasswordSalt string
+		SecretKey       string
+		AccessTokenTTL  time.Duration
+		RefreshTokenTTL time.Duration
 	}
 }
 
