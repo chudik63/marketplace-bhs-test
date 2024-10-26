@@ -1,17 +1,26 @@
 version: '3.8'
 
 services:
+  marketplace:
+    restart: always
+    build: ./
+    command: ./marketplace
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    environment:
+      - DATABASE_URL=postgres://root:123@postgres:5432/marketplace?sslmode=disable
+    volumes:
+      - ./migrations:/migrations
+
   postgres:
-    image: postgres:15
+    restart: always
+    image: postgres:latest
     container_name: postgres_container
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: 123
       POSTGRES_DB: marketplace
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
-
-volumes:
-  postgres_data:
