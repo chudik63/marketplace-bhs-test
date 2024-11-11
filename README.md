@@ -22,11 +22,11 @@ Stop all containers:
 make down
 ```
 
-Start only the PostgreSQL container for development::
+Start only the PostgreSQL container for development:
 ```
 make dev-up
 ```
-Stop the PostgreSQL container::
+Stop the PostgreSQL container:
 ```
 make dev-down
 ```
